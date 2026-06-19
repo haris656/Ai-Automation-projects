@@ -1,0 +1,293 @@
+NexaFlow SaaS Platform — Customer Support Documentation
+Version 2.4 | Last Updated: June 2025
+================================================================
+
+SECTION 1: GETTING STARTED
+================================================================
+
+1.1 What is NexaFlow?
+----------------------
+NexaFlow is a workflow automation platform that helps businesses
+automate repetitive tasks, connect their tools, and build
+intelligent pipelines without writing code. It supports over
+500 integrations and includes built-in AI capabilities for
+data processing, content generation, and decision automation.
+
+1.2 Creating Your Account
+--------------------------
+To create a NexaFlow account:
+1. Visit app.nexaflow.io and click "Start Free Trial"
+2. Enter your work email address
+3. Verify your email via the confirmation link sent to your inbox
+4. Complete your company profile
+5. Choose your plan (Starter, Professional, or Enterprise)
+
+Your free trial includes 14 days of full Professional plan access
+with no credit card required.
+
+1.3 System Requirements
+------------------------
+NexaFlow is a fully cloud-based platform accessible via any
+modern web browser. We recommend:
+- Chrome 110+ or Firefox 112+ for best performance
+- Stable internet connection (minimum 5 Mbps)
+- Screen resolution of 1280x720 or higher
+
+No software installation is required.
+
+================================================================
+
+SECTION 2: PLANS AND PRICING
+================================================================
+
+2.1 Available Plans
+--------------------
+Starter Plan — $29/month
+  - Up to 5 active workflows
+  - 10,000 task executions per month
+  - 50 integrations
+  - Email support (48-hour response time)
+  - 5 GB storage
+
+Professional Plan — $79/month
+  - Unlimited active workflows
+  - 100,000 task executions per month
+  - All 500+ integrations
+  - Priority email and chat support (4-hour response time)
+  - 50 GB storage
+  - AI features included
+  - Team collaboration (up to 10 members)
+
+Enterprise Plan — Custom pricing
+  - Unlimited everything
+  - Dedicated support manager
+  - SLA guarantees (99.9% uptime)
+  - SSO and advanced security controls
+  - Custom integrations
+  - Unlimited team members
+  - On-premise deployment option
+
+2.2 Billing
+------------
+All plans are billed monthly or annually. Annual billing provides
+a 20% discount compared to monthly billing. Invoices are generated
+on the first of each month and sent to your billing email address.
+
+Accepted payment methods: Visa, Mastercard, American Express,
+PayPal, and bank transfer (Enterprise only).
+
+2.3 Upgrading or Downgrading
+------------------------------
+You can upgrade your plan at any time from Settings > Billing.
+Upgrades take effect immediately and you are charged a prorated
+amount for the remainder of the billing cycle.
+
+Downgrades take effect at the start of the next billing cycle.
+If your current usage exceeds the limits of the lower plan,
+workflows will be paused until usage is within the new limits.
+
+2.4 Cancellation Policy
+------------------------
+You can cancel your subscription at any time from Settings >
+Billing > Cancel Subscription. Your account remains active until
+the end of the current billing period. We do not offer refunds
+for partial months.
+
+After cancellation, your data is retained for 30 days before
+being permanently deleted. You can export your data at any time
+from Settings > Data Export.
+
+================================================================
+
+SECTION 3: WORKFLOWS
+================================================================
+
+3.1 Creating a Workflow
+------------------------
+To create a new workflow:
+1. Click the "New Workflow" button from the dashboard
+2. Choose to start from scratch or use a template
+3. Add a trigger (the event that starts your workflow)
+4. Add actions (the steps your workflow performs)
+5. Test your workflow using the built-in testing tool
+6. Activate the workflow when ready
+
+3.2 Triggers
+-------------
+NexaFlow supports the following trigger types:
+- Schedule: Run on a time-based schedule (e.g., every day at 9 AM)
+- Webhook: Triggered by an HTTP POST request from an external service
+- Event: Triggered by an event in a connected integration
+  (e.g., new email received, new row in spreadsheet)
+- Manual: Triggered manually from the dashboard
+
+3.3 Actions
+------------
+Actions are the steps your workflow performs after the trigger fires.
+Common action types include:
+- Send email or SMS
+- Create or update a record in a CRM
+- Post to Slack or Teams
+- Make an HTTP request to any API
+- Run AI processing on text or data
+- Filter, transform, or route data
+- Delay execution for a set period
+
+3.4 Error Handling
+-------------------
+NexaFlow automatically retries failed actions up to 3 times with
+exponential backoff. If a workflow fails after all retries, you
+will receive an email notification with details of the failure.
+
+You can configure custom error handling from the workflow settings,
+including routing failed executions to a separate error workflow.
+
+3.5 Execution Limits
+---------------------
+Task executions are counted per action step. A workflow with 5
+actions that runs 100 times uses 500 task executions. Executions
+reset on the first of each month.
+
+If you exceed your monthly limit, workflows will pause until the
+next month or until you upgrade your plan. You can purchase
+additional executions from Settings > Billing > Add-ons.
+
+================================================================
+
+SECTION 4: INTEGRATIONS
+================================================================
+
+4.1 Available Integrations
+---------------------------
+NexaFlow connects with over 500 tools and platforms including:
+- CRM: Salesforce, HubSpot, Zoho CRM, Pipedrive
+- Communication: Gmail, Outlook, Slack, Microsoft Teams, WhatsApp
+- Databases: MySQL, PostgreSQL, Airtable, Google Sheets
+- E-commerce: Shopify, WooCommerce, Stripe
+- Project Management: Asana, Jira, Trello, Monday.com
+- AI: OpenAI, Anthropic, Google Gemini, Hugging Face
+- Cloud: AWS, Google Cloud, Azure, Dropbox
+
+4.2 Connecting an Integration
+-------------------------------
+To connect a new integration:
+1. Go to Settings > Integrations
+2. Search for the integration you want to connect
+3. Click "Connect" and follow the authentication steps
+4. The integration will appear as available in your workflows
+
+Most integrations use OAuth 2.0 for secure authentication.
+Your credentials are encrypted at rest and never stored in plain text.
+
+4.3 Custom Integrations
+------------------------
+Professional and Enterprise users can connect any tool using our
+HTTP Request action, which supports all REST API methods (GET,
+POST, PUT, DELETE, PATCH) with custom headers, authentication,
+and request bodies.
+
+Enterprise users can also request custom integration development
+through their dedicated support manager.
+
+================================================================
+
+SECTION 5: AI FEATURES
+================================================================
+
+5.1 Overview
+-------------
+NexaFlow's built-in AI features are available on Professional and
+Enterprise plans. They include:
+
+- Text Generation: Generate emails, reports, summaries, and content
+- Data Extraction: Extract structured data from unstructured text
+- Classification: Categorize text, emails, or records automatically
+- Sentiment Analysis: Detect tone and sentiment in customer messages
+- Translation: Translate content between 50+ languages
+
+5.2 Using AI Steps
+-------------------
+To add an AI step to your workflow:
+1. Click "Add Action" in your workflow editor
+2. Select the "AI" category
+3. Choose the AI action type
+4. Configure your prompt and input/output fields
+5. Test the step with sample data
+
+AI steps consume task executions at a higher rate: 5 executions
+per AI step call due to the additional processing involved.
+
+5.3 AI Accuracy and Limitations
+---------------------------------
+AI outputs are probabilistic and may occasionally be incorrect.
+We recommend always validating AI outputs before using them in
+critical business processes. NexaFlow provides confidence scores
+for classification and extraction tasks to help you set
+appropriate thresholds.
+
+================================================================
+
+SECTION 6: SECURITY AND COMPLIANCE
+================================================================
+
+6.1 Data Security
+------------------
+NexaFlow uses AES-256 encryption for all data at rest and TLS 1.3
+for all data in transit. Our infrastructure is hosted on AWS in
+US-East-1 and EU-West-1 regions.
+
+6.2 Compliance
+---------------
+NexaFlow is compliant with:
+- SOC 2 Type II
+- GDPR (for EU customers)
+- CCPA (for California customers)
+- HIPAA (Enterprise plan with BAA)
+
+6.3 Data Residency
+-------------------
+Enterprise customers can choose their preferred data residency
+region: United States, European Union, or Asia-Pacific.
+
+6.4 Single Sign-On (SSO)
+-------------------------
+SSO is available on Enterprise plans and supports:
+- SAML 2.0
+- OAuth 2.0
+- Active Directory / LDAP integration
+
+================================================================
+
+SECTION 7: SUPPORT
+================================================================
+
+7.1 Getting Help
+-----------------
+Support options vary by plan:
+
+Starter: Email support at support@nexaflow.io (48-hour response)
+Professional: Email + live chat (4-hour response, Mon-Fri 9-5 EST)
+Enterprise: Dedicated support manager + 24/7 emergency line
+
+7.2 Documentation and Resources
+---------------------------------
+- Full documentation: docs.nexaflow.io
+- Video tutorials: nexaflow.io/tutorials
+- Community forum: community.nexaflow.io
+- Status page: status.nexaflow.io
+- API reference: api.nexaflow.io
+
+7.3 Reporting Bugs
+-------------------
+To report a bug, please include:
+- Your account email
+- The workflow ID (found in the URL when editing the workflow)
+- A description of what you expected vs what happened
+- Screenshots or screen recording if possible
+
+Send bug reports to bugs@nexaflow.io or use the in-app feedback
+button (? icon in the bottom right corner).
+
+================================================================
+END OF DOCUMENT
+================================================================

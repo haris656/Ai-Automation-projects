@@ -1,0 +1,44 @@
+# Environment & Secrets
+.env
+.env.local
+*.key
+*.pem
+secrets/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+build/
+dist/
+*.egg-info/
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# Uploaded files (user data)
+uploads/
+temp_uploads/
+*.pdf
+*.txt
+!sample_docs/*.pdf
+!sample_docs/*.txt
+
+# Logs
+*.log
+logs/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
