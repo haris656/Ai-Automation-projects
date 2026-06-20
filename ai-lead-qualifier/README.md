@@ -80,16 +80,37 @@ In n8n: **Workflows -> Import from File** and select `workflows/ai-inbound-lead-
 
 The workflow imports **inactive** and with **no credentials attached**. That is intentional. You attach your own.
 
-### 2. Set environment variables
+### 2. Configuration overview: two kinds of secrets
 
-Copy `.env.example` to `.env` and set:
+This project deliberately separates secrets the way n8n actually handles them:
 
-- `N8N_LEAD_HMAC_SECRET` — a long random secret. Generate one with `openssl rand -hex 32`.
-- `N8N_LEAD_FROM_EMAIL` — the "from" address for the auto-reply.
+- **Environment variables** (read by Code nodes via `$env`) live in your n8n host environment. There are only two.
+- **API credentials** (Anthropic, Slack, Google, SMTP) are **not** environment variables. They live in n8n's encrypted **Credentials** store and are selected on the relevant nodes.
 
-These must be available to the n8n process (host env, container env, or n8n's env file). Restart n8n after setting them.
+Getting this distinction right is the whole point: n8n does not read API keys from a `.env` file the way a typical web app does.
 
-### 3. Create the credentials
+### 3. Set the environment variables
+
+Copy the example file and fill in your values:
+
+```bash
+cp .env.n8n.example .env.n8n
+```
+
+```bash
+# .env.n8n
+N8N_LEAD_HMAC_SECRET=replace_with_a_long_random_secret   # openssl rand -hex 32
+N8N_LEAD_FROM_EMAIL=you@yourdomain.com
+```
+
+Make these available to the n8n process (host env, container env, or n8n's own env file), then restart n8n.
+
+| Variable | Used by | Purpose |
+|----------|---------|---------|
+| `N8N_LEAD_HMAC_SECRET` | Verify & Validate node | Secret for verifying the incoming webhook signature |
+| `N8N_LEAD_FROM_EMAIL` | Email Hot Auto-Reply node | The "from" address on the auto-reply |
+
+### 4. Create the credentials (in n8n, not in any file)
 
 Create these in **n8n -> Credentials** and select them on the matching nodes:
 
@@ -102,12 +123,12 @@ Create these in **n8n -> Credentials** and select them on the matching nodes:
 
 > The Claude call uses the HTTP Request node with a generic **Header Auth** credential rather than the LangChain Anthropic node. This keeps the auth boundary explicit, avoids LangChain-node version drift, and makes the prompt structure easy to read and audit.
 
-### 4. Point the placeholder fields at your resources
+### 5. Point the placeholder fields at your resources
 
 - **Slack Hot Alert** and **Slack Failure Alert**: set the channel (placeholder `C0000000000`).
 - **Append Audit Log**: set the Google Sheet (placeholder `YOUR_GOOGLE_SHEET_ID`) and the sheet/tab name (`Leads`). Create a sheet with a header row matching the logged fields: `timestamp, name, email, company, email_type, domain, score, tier, reason, parsed_ok, api_failed, message`.
 
-### 5. Activate and test
+### 6. Activate and test
 
 Activate the workflow, then send a signed test request:
 
@@ -162,7 +183,8 @@ If you import into a fresh n8n and hit a node warning, it is almost always a ver
 ai-lead-qualifier/
   README.md                                  This file
   SECURITY.md                                Security design notes
-  .env.example                               Placeholder environment variables
+  .env.n8n.example                           Placeholder environment variables (the two real $env vars)
+  .gitignore                                 Keeps real secrets out of git
   sign-request.js                            Helper to send a signed test request
   workflows/
     ai-inbound-lead-router.json              The workflow (import this)
