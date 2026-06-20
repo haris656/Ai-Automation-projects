@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brand Kit Studio</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='13' fill='none' stroke='%23E8654F' stroke-width='2.5'/%3E%3Ccircle cx='16' cy='16' r='4' fill='%23E8654F'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..600&family=Spline+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link id="dynamicFonts" rel="stylesheet" href="">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --paper:#F6F4EF;
+  --paper-2:#FFFFFF;
+  --ink:#1A1714;
+  --ink-2:#5C564E;
+  --ink-3:#8E877C;
+  --line:#E3DED4;
+  --accent:#E8654F;
+  --accent-deep:#C44D38;
+  --sans:'Spline Sans',system-ui,sans-serif;
+  --serif:'Fraunces',Georgia,serif;
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--sans);
+  background:var(--paper);
+  color:var(--ink);
+  line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+::selection{background:var(--accent);color:#fff}
+
+.wrap{max-width:1060px;margin:0 auto;padding:0 28px}
+
+/* header */
+header{padding:30px 0 0}
+.brandmark{display:flex;align-items:center;gap:11px}
+.brandmark svg{width:26px;height:26px}
+.brandmark .nm{font-family:var(--serif);font-size:20px;font-weight:500;letter-spacing:-0.2px}
+.brandmark .nm em{font-style:italic;color:var(--accent-deep)}
+
+/* hero / input */
+.intro{padding:64px 0 44px;max-width:680px}
+.intro .ey{font-family:var(--sans);font-size:13px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent-deep);margin-bottom:20px}
+.intro h1{font-family:var(--serif);font-weight:340;font-size:clamp(38px,6vw,68px);line-height:1.02;letter-spacing:-1.5px;margin-bottom:22px}
+.intro h1 em{font-style:italic;color:var(--accent-deep)}
+.intro p{font-size:18px;color:var(--ink-2);max-width:520px}
+
+.panel{
+  background:var(--paper-2);
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:32px;
+  box-shadow:0 1px 2px rgba(26,23,20,0.03),0 18px 44px rgba(26,23,20,0.05);
+}
+.field{margin-bottom:20px}
+.field:last-of-type{margin-bottom:0}
+.field label{display:block;font-size:13px;font-weight:600;color:var(--ink-2);margin-bottom:8px}
+.field label .opt{color:var(--ink-3);font-weight:400}
+.field textarea,.field input,.field select{
+  width:100%;font-family:var(--sans);font-size:15.5px;color:var(--ink);
+  background:var(--paper);border:1px solid var(--line);border-radius:10px;
+  padding:13px 15px;outline:none;transition:border-color .18s,box-shadow .18s;
+}
+.field textarea{resize:vertical;min-height:92px;line-height:1.5}
+.field textarea:focus,.field input:focus,.field select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(232,101,79,0.14)}
+.field textarea::placeholder,.field input::placeholder{color:var(--ink-3)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:600px){.row2{grid-template-columns:1fr;gap:20px}}
+
+.go-row{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-top:28px;flex-wrap:wrap}
+.go-note{font-size:12.5px;color:var(--ink-3);max-width:280px}
+.btn{
+  display:inline-flex;align-items:center;gap:10px;font-family:var(--sans);
+  font-size:15px;font-weight:600;color:#fff;background:var(--ink);
+  border:none;border-radius:10px;padding:14px 26px;cursor:pointer;
+  transition:background .2s,transform .15s,box-shadow .2s;
+}
+.btn:hover:not(:disabled){background:var(--accent-deep);transform:translateY(-1px);box-shadow:0 10px 26px rgba(196,77,56,0.26)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn .ar{transition:transform .2s}
+.btn:hover:not(:disabled) .ar{transform:translateX(3px)}
+
+/* agent run panel */
+.run{margin:48px 0;display:none}
+.run.show{display:block}
+.run-head{font-family:var(--serif);font-style:italic;font-size:22px;color:var(--ink);margin-bottom:22px}
+.agents{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+@media(max-width:760px){.agents{grid-template-columns:repeat(2,1fr)}}
+.agent{
+  border:1px solid var(--line);border-radius:12px;padding:16px 14px;background:var(--paper-2);
+  transition:border-color .25s,background .25s,transform .25s;position:relative;overflow:hidden;
+}
+.agent .ag-name{font-size:13px;font-weight:600;margin-bottom:4px;letter-spacing:-0.2px}
+.agent .ag-state{font-size:11.5px;color:var(--ink-3);font-family:var(--sans);min-height:16px}
+.agent .ag-dot{position:absolute;top:14px;right:14px;width:8px;height:8px;border-radius:50%;background:var(--line)}
+.agent.running{border-color:var(--accent);background:#fff}
+.agent.running .ag-dot{background:var(--accent);animation:pulse 1.2s ease-in-out infinite}
+.agent.done{border-color:#CFE3D2;background:#fff}
+.agent.done .ag-dot{background:#3F9D5B}
+.agent.skipped{opacity:.55}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.85)}}
+
+.run-log{margin-top:18px;font-size:13px;color:var(--ink-2);min-height:20px;font-family:var(--sans)}
+.run-log .crit{color:var(--accent-deep);font-weight:600}
+
+/* result */
+.result{display:none;margin:40px 0 90px}
+.result.show{display:block;animation:fadeUp .6s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+
+.kit-head{text-align:center;margin-bottom:8px}
+.kit-eyebrow{font-size:12.5px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--ink-3);margin-bottom:18px}
+
+/* logo card */
+.logo-card{
+  background:var(--paper-2);border:1px solid var(--line);border-radius:18px;
+  padding:54px 40px;text-align:center;box-shadow:0 18px 44px rgba(26,23,20,0.05);margin-bottom:14px;
+}
+.logo-art{width:170px;height:170px;margin:0 auto 26px}
+.logo-art svg{width:100%;height:100%}
+.kit-name{font-family:var(--serif);font-weight:400;font-size:clamp(34px,5vw,52px);letter-spacing:-1px;line-height:1.05}
+.kit-tagline{font-size:17px;color:var(--ink-2);margin-top:10px;font-style:italic;font-family:var(--serif)}
+.kit-oneliner{font-size:15px;color:var(--ink-3);margin-top:16px;max-width:440px;margin-left:auto;margin-right:auto}
+
+/* section cards grid */
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+@media(max-width:760px){.cards{grid-template-columns:1fr}}
+.card{background:var(--paper-2);border:1px solid var(--line);border-radius:16px;padding:28px}
+.card.span{grid-column:1 / -1}
+.card h3{font-family:var(--sans);font-size:12px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:var(--ink-3);margin-bottom:18px}
+
+/* palette */
+.swatches{display:flex;gap:0;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+.sw{flex:1;height:96px;position:relative;display:flex;align-items:flex-end}
+.sw .meta{width:100%;background:rgba(255,255,255,0.92);padding:7px 9px;backdrop-filter:blur(4px)}
+.sw .meta .nm{font-size:10.5px;font-weight:600;color:var(--ink);line-height:1.2}
+.sw .meta .hx{font-size:10px;color:var(--ink-3);font-family:var(--sans);text-transform:uppercase}
+
+/* fonts */
+.font-row{padding:14px 0;border-bottom:1px solid var(--line)}
+.font-row:last-child{border-bottom:none}
+.font-role{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--ink-3);margin-bottom:6px}
+.font-spec{font-size:13px;color:var(--ink-2);margin-top:6px}
+.font-sample{font-size:30px;line-height:1.1;color:var(--ink);letter-spacing:-0.3px}
+
+/* value props */
+.vp{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid var(--line)}
+.vp:last-child{border-bottom:none}
+.vp .vp-mark{width:8px;height:8px;border-radius:50%;background:var(--accent);margin-top:7px;flex:none}
+.vp .vp-title{font-weight:600;font-size:15px;margin-bottom:2px}
+.vp .vp-body{font-size:14px;color:var(--ink-2)}
+
+.about-text{font-size:16px;line-height:1.7;color:var(--ink)}
+.posts li{list-style:none;padding:13px 16px;background:var(--paper);border-radius:10px;font-size:14px;color:var(--ink);margin-bottom:10px;border:1px solid var(--line)}
+.posts li:last-child{margin-bottom:0}
+
+.persona{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.persona span{font-size:13px;font-weight:500;padding:6px 13px;border:1px solid var(--line);border-radius:100px;background:var(--paper);color:var(--ink-2)}
+
+.review-line{font-size:14px;color:var(--ink-2);font-style:italic;font-family:var(--serif);line-height:1.5}
+
+.actions{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:34px}
+.actions .dl{background:var(--ink);color:#fff;border:none;font-family:var(--sans);font-weight:600;font-size:14px;padding:13px 22px;border-radius:10px;cursor:pointer;transition:background .2s,transform .15s,box-shadow .2s}
+.actions .dl:hover{background:var(--accent-deep);transform:translateY(-1px);box-shadow:0 10px 26px rgba(196,77,56,0.24)}
+.actions .again-btn{background:none;border:1px solid var(--line);color:var(--ink);font-family:var(--sans);font-weight:600;font-size:14px;padding:13px 22px;border-radius:10px;cursor:pointer;transition:border-color .2s,background .2s}
+.actions .again-btn:hover{border-color:var(--accent);background:var(--paper-2)}
+.sw .meta .hx{cursor:pointer;transition:color .15s}
+.sw .meta .hx:hover{color:var(--accent-deep)}
+
+.err{display:none;margin:24px 0;padding:16px 18px;border:1px solid #E7B4AB;background:#FBEEEB;border-radius:12px;color:var(--accent-deep);font-size:14px}
+.err.show{display:block}
+
+footer{border-top:1px solid var(--line);padding:26px 0;margin-top:30px}
+.footer-in{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;color:var(--ink-3);flex-wrap:wrap;gap:10px}
+
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="brandmark">
+      <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="16" cy="16" r="13" fill="none" stroke="#E8654F" stroke-width="2.5"/>
+        <circle cx="16" cy="16" r="4" fill="#E8654F"/>
+      </svg>
+      <span class="nm">Brand Kit <em>Studio</em></span>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="intro">
+    <div class="ey">A multi-agent design team</div>
+    <h1>Describe a business. Get a <em>brand</em> back.</h1>
+    <p>A team of AI agents works your brief into a coherent identity: name, voice, palette, type, and a real logo. One agent critiques the work and sends the weak parts back for another pass.</p>
+  </section>
+
+  <section class="panel" id="inputPanel">
+    <div class="field">
+      <label for="business">What is the business?</label>
+      <textarea id="business" placeholder="A small-batch roastery in Lahore that ships single-origin beans to home brewers and runs weekend cupping sessions."></textarea>
+    </div>
+    <div class="row2">
+      <div class="field">
+        <label for="audience">Who is it for? <span class="opt">(optional)</span></label>
+        <input id="audience" type="text" placeholder="Home brewers who care about origin">
+      </div>
+      <div class="field">
+        <label for="vibe">Desired vibe? <span class="opt">(optional)</span></label>
+        <input id="vibe" type="text" placeholder="Warm, crafted, a little nerdy">
+      </div>
+    </div>
+    <div class="go-row">
+      <div class="go-note">The agent team runs live. Generation takes about a minute.</div>
+      <button class="btn" id="goBtn">Generate the kit <span class="ar">&rarr;</span></button>
+    </div>
+  </section>
+
+  <div class="err" id="errBox"></div>
+
+  <section class="run" id="runPanel">
+    <div class="run-head">The team is working</div>
+    <div class="agents" id="agentGrid"></div>
+    <div class="run-log" id="runLog"></div>
+  </section>
+
+  <section class="result" id="resultPanel"></section>
+</main>
+
+<footer>
+  <div class="wrap footer-in">
+    <span>Built by <strong style="color:var(--ink);font-weight:600">Muhammad Haris Sultan</strong></span>
+    <span><a href="https://github.com/haris656/Ai-Automation-projects" target="_blank" rel="noopener" style="color:var(--accent-deep);text-decoration:none;font-weight:600">github.com/haris656</a></span>
+  </div>
+</footer>
+
+<script>
+const AGENTS = [
+  { key: 'strategist', label: 'Strategist' },
+  { key: 'namer', label: 'Namer' },
+  { key: 'copywriter', label: 'Copywriter' },
+  { key: 'visual', label: 'Visual Director' },
+  { key: 'critic', label: 'Critic' }
+];
+
+const el = (id) => document.getElementById(id);
+const goBtn = el('goBtn');
+const runPanel = el('runPanel');
+const resultPanel = el('resultPanel');
+const errBox = el('errBox');
+
+function buildAgentGrid() {
+  const grid = el('agentGrid');
+  grid.innerHTML = '';
+  AGENTS.forEach(a => {
+    const card = document.createElement('div');
+    card.className = 'agent';
+    card.id = 'agent-' + a.key;
+    card.innerHTML = `<span class="ag-dot"></span><div class="ag-name">${a.label}</div><div class="ag-state" id="state-${a.key}">waiting</div>`;
+    grid.appendChild(card);
+  });
+}
+
+function setAgent(key, status, detail) {
+  const card = el('agent-' + key);
+  if (!card) return;
+  card.classList.remove('running', 'done', 'skipped');
+  if (status === 'running') card.classList.add('running');
+  if (status === 'done') card.classList.add('done');
+  if (status === 'skipped') card.classList.add('skipped');
+  const state = el('state-' + key);
+  if (state) state.textContent = detail || status;
+}
+
+function escapeHtml(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+function loadFonts(display, body) {
+  const fams = [display, body].filter(Boolean)
+    .map(f => f.trim().replace(/\s+/g, '+') + ':wght@400;500;600').join('&family=');
+  if (fams) el('dynamicFonts').href = 'https://fonts.googleapis.com/css2?family=' + fams + '&display=swap';
+}
+
+// keep the last generated kit so download buttons can use it
+let CURRENT_KIT = null;
+
+function downloadBlob(filename, text, type) {
+  const blob = new Blob([text], { type: type });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function slug(name) {
+  return (name || 'brand').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'brand';
+}
+
+function downloadLogo() {
+  if (!CURRENT_KIT) return;
+  const svg = document.querySelector('.logo-art svg');
+  if (!svg) return;
+  const out = '<?xml version="1.0" encoding="UTF-8"?>\n' + svg.outerHTML;
+  downloadBlob(slug(CURRENT_KIT.name) + '-logo.svg', out, 'image/svg+xml');
+}
+
+function downloadLogoPng() {
+  if (!CURRENT_KIT) return;
+  const svg = document.querySelector('.logo-art svg');
+  if (!svg) return;
+  const size = 1024; // high-res export
+  const svgString = new XMLSerializer().serializeToString(svg);
+  const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' });
+  const url = URL.createObjectURL(svgBlob);
+
+  const render = function () {
+    const img = new Image();
+    img.onload = function () {
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, size, size);
+      URL.revokeObjectURL(url);
+      canvas.toBlob(function (blob) {
+        if (!blob) return;
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = slug(CURRENT_KIT.name) + '-logo.png';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(a.href);
+      }, 'image/png');
+    };
+    img.onerror = function () { URL.revokeObjectURL(url); };
+    img.src = url;
+  };
+
+  // Ensure any logo text uses the right font before rasterizing.
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(render).catch(render);
+  } else {
+    render();
+  }
+}
+
+function downloadKit() {
+  if (!CURRENT_KIT) return;
+  const k = CURRENT_KIT;
+  const lines = [];
+  lines.push(k.name || 'Brand');
+  if (k.tagline) lines.push(k.tagline);
+  lines.push('');
+  if (k.one_liner) { lines.push(k.one_liner); lines.push(''); }
+  lines.push('VOICE');
+  if (k.strategy && k.strategy.personality) lines.push((k.strategy.personality || []).join(', '));
+  if (k.strategy && k.strategy.tone) lines.push(k.strategy.tone);
+  lines.push('');
+  lines.push('COLOR PALETTE');
+  (k.palette || []).forEach(p => lines.push('  ' + p.name + ': ' + p.hex));
+  lines.push('');
+  lines.push('TYPOGRAPHY');
+  if (k.fonts) { lines.push('  Display: ' + (k.fonts.display || '')); lines.push('  Body: ' + (k.fonts.body || '')); }
+  lines.push('');
+  if (k.about) { lines.push('ABOUT'); lines.push(k.about); lines.push(''); }
+  if ((k.value_props || []).length) {
+    lines.push('WHAT IT OFFERS');
+    k.value_props.forEach(v => lines.push('  ' + v.title + ': ' + v.body));
+    lines.push('');
+  }
+  if ((k.social_posts || []).length) {
+    lines.push('SAMPLE POSTS');
+    k.social_posts.forEach(p => lines.push('  - ' + p));
+    lines.push('');
+  }
+  if ((k.alt_taglines || []).length) {
+    lines.push('ALTERNATE TAGLINES');
+    k.alt_taglines.forEach(t => lines.push('  - ' + t));
+    lines.push('');
+  }
+  downloadBlob(slug(k.name) + '-brand-kit.txt', lines.join('\n'), 'text/plain');
+}
+
+function copyHex(hex, elm) {
+  navigator.clipboard.writeText(hex).then(() => {
+    const old = elm.textContent;
+    elm.textContent = 'copied';
+    setTimeout(() => { elm.textContent = old; }, 1100);
+  }).catch(() => {});
+}
+
+async function generate() {
+  const business = el('business').value.trim();
+  if (business.length < 2) {
+    showError('Tell us a little about the business first.');
+    return;
+  }
+  errBox.classList.remove('show');
+  resultPanel.classList.remove('show');
+  resultPanel.innerHTML = '';
+  goBtn.disabled = true;
+  goBtn.querySelector('.ar').textContent = '';
+  goBtn.childNodes[0].nodeValue = 'Working ';
+  buildAgentGrid();
+  runPanel.classList.add('show');
+  el('runLog').textContent = '';
+
+  let finalKit = null;
+
+  try {
+    const resp = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        business,
+        audience: el('audience').value.trim(),
+        vibe: el('vibe').value.trim()
+      })
+    });
+
+    if (!resp.ok) {
+      const j = await resp.json().catch(() => ({}));
+      throw new Error(j.error || 'Something went wrong. Please try again.');
+    }
+
+    const reader = resp.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = '';
+
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      let nl;
+      while ((nl = buffer.indexOf('\n')) >= 0) {
+        const line = buffer.slice(0, nl).trim();
+        buffer = buffer.slice(nl + 1);
+        if (!line) continue;
+        const evt = JSON.parse(line);
+        handleEvent(evt);
+        if (evt.stage === 'assemble' && evt.data) finalKit = evt.data;
+        if (evt.stage === 'error') throw new Error(evt.detail || 'Generation failed.');
+      }
+    }
+
+    if (finalKit) renderKit(finalKit);
+    else throw new Error('No kit was produced. Please try again.');
+
+  } catch (err) {
+    showError(err.message || 'Generation failed. Please try again.');
+    runPanel.classList.remove('show');
+  } finally {
+    goBtn.disabled = false;
+    goBtn.childNodes[0].nodeValue = 'Generate the kit ';
+    goBtn.querySelector('.ar').textContent = '\u2192';
+  }
+}
+
+function handleEvent(evt) {
+  const { stage, status, detail } = evt;
+  if (stage === 'refiner') {
+    if (status === 'running') {
+      el('runLog').innerHTML = '<span class="crit">Refining</span> ' + escapeHtml(detail);
+    } else if (status === 'skipped') {
+      el('runLog').textContent = detail;
+    } else if (status === 'done') {
+      el('runLog').textContent = detail;
+    }
+    return;
+  }
+  if (stage === 'assemble') return;
+  if (stage === 'critic' && status === 'done') {
+    el('runLog').innerHTML = '<span class="crit">Critic</span>: ' + escapeHtml(detail);
+  }
+  setAgent(stage, status, detail);
+}
+
+function renderKit(kit) {
+  CURRENT_KIT = kit;
+  loadFonts((kit.fonts || {}).display, (kit.fonts || {}).body);
+  const displayFont = (kit.fonts || {}).display || 'Fraunces';
+  const bodyFont = (kit.fonts || {}).body || 'Spline Sans';
+
+  const palette = kit.palette || [];
+  const swatches = palette.map(p => `
+    <div class="sw" style="background:${escapeHtml(p.hex)}">
+      <div class="meta"><div class="nm">${escapeHtml(p.name)}</div><div class="hx" title="Click to copy" onclick="copyHex('${escapeHtml(p.hex)}', this)">${escapeHtml(p.hex)}</div></div>
+    </div>`).join('');
+
+  const vps = (kit.value_props || []).map(v => `
+    <div class="vp"><div class="vp-mark"></div><div><div class="vp-title">${escapeHtml(v.title)}</div><div class="vp-body">${escapeHtml(v.body)}</div></div></div>`).join('');
+
+  const posts = (kit.social_posts || []).map(p => `<li>${escapeHtml(p)}</li>`).join('');
+  const persona = (kit.strategy && kit.strategy.personality || []).map(w => `<span>${escapeHtml(w)}</span>`).join('');
+  const altTags = (kit.alt_taglines || []).map(t => escapeHtml(t)).join(' &middot; ');
+  const review = (kit.review && kit.review.overall) ? kit.review.overall : '';
+
+  // Logo: server already sanitized the SVG. Fallback to a monogram if missing.
+  let logoHtml = kit.logo_svg;
+  if (!logoHtml || !kit.logo_ok) {
+    const initials = (kit.name || '?').split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase();
+    const c = (palette[0] && palette[0].hex) || '#1A1714';
+    logoHtml = `<svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg"><circle cx="120" cy="120" r="100" fill="none" stroke="${c}" stroke-width="6"/><text x="120" y="120" text-anchor="middle" dominant-baseline="central" font-family="${displayFont}" font-size="84" font-weight="500" fill="${c}">${escapeHtml(initials)}</text></svg>`;
+  }
+
+  resultPanel.innerHTML = `
+    <div class="kit-head"><div class="kit-eyebrow">Your brand kit</div></div>
+
+    <div class="logo-card">
+      <div class="logo-art">${logoHtml}</div>
+      <div class="kit-name" style="font-family:'${escapeHtml(displayFont)}',serif">${escapeHtml(kit.name)}</div>
+      ${kit.tagline ? `<div class="kit-tagline">${escapeHtml(kit.tagline)}</div>` : ''}
+      ${kit.one_liner ? `<div class="kit-oneliner">${escapeHtml(kit.one_liner)}</div>` : ''}
+    </div>
+
+    <div class="cards">
+      <div class="card span">
+        <h3>Color palette</h3>
+        <div class="swatches">${swatches}</div>
+      </div>
+
+      <div class="card">
+        <h3>Typography</h3>
+        <div class="font-row">
+          <div class="font-role">Display</div>
+          <div class="font-sample" style="font-family:'${escapeHtml(displayFont)}',serif">${escapeHtml(displayFont)}</div>
+          <div class="font-spec">${escapeHtml(displayFont)}</div>
+        </div>
+        <div class="font-row">
+          <div class="font-role">Body</div>
+          <div class="font-sample" style="font-family:'${escapeHtml(bodyFont)}',sans-serif;font-size:22px">The quick brown fox</div>
+          <div class="font-spec">${escapeHtml(bodyFont)}${(kit.fonts && kit.fonts.pairing_note) ? ' &middot; ' + escapeHtml(kit.fonts.pairing_note) : ''}</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Brand voice</h3>
+        <div class="persona">${persona}</div>
+        ${kit.strategy && kit.strategy.tone ? `<p class="font-spec" style="margin-top:14px">${escapeHtml(kit.strategy.tone)}</p>` : ''}
+      </div>
+
+      ${kit.about ? `<div class="card span"><h3>About</h3><p class="about-text" style="font-family:'${escapeHtml(bodyFont)}',sans-serif">${escapeHtml(kit.about)}</p></div>` : ''}
+
+      ${vps ? `<div class="card"><h3>What it offers</h3>${vps}</div>` : ''}
+
+      ${posts ? `<div class="card"><h3>Sample posts</h3><ul class="posts">${posts}</ul></div>` : ''}
+
+      ${altTags ? `<div class="card span"><h3>Alternate taglines</h3><p class="about-text">${altTags}</p></div>` : ''}
+
+      ${review ? `<div class="card span"><h3>Director's note</h3><p class="review-line">${escapeHtml(review)}</p></div>` : ''}
+    </div>
+
+    <div class="actions">
+      <button class="dl" onclick="downloadLogo()">Download logo (SVG)</button>
+      <button class="dl" onclick="downloadLogoPng()">Download logo (PNG)</button>
+      <button class="dl" onclick="downloadKit()">Download kit (text)</button>
+      <button class="again-btn" onclick="resetForm()">Generate another</button>
+    </div>
+  `;
+  resultPanel.classList.add('show');
+  setTimeout(() => resultPanel.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80);
+}
+
+function showError(msg) {
+  errBox.textContent = msg;
+  errBox.classList.add('show');
+}
+
+function resetForm() {
+  resultPanel.classList.remove('show');
+  runPanel.classList.remove('show');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+goBtn.addEventListener('click', generate);
+</script>
+
+</body>
+</html>
