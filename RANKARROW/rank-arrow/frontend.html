@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>InstaFetch — Instagram Viewer & Downloader</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --brand:#E1306C;--brand2:#C13584;--grad:linear-gradient(135deg,#F58529 0%,#DD2A7B 50%,#8134AF 100%);
+    --bg:#f7f7f8;--card:#fff;--surface:#f1f1f3;--surface2:#e9e9ec;
+    --text:#16161a;--text2:#5a5a66;--text3:#9a9aa6;
+    --border:#e7e7ea;--border2:#d8d8dd;
+    --ok:#16a34a;--ok-bg:#f0fdf4;--err:#dc2626;--err-bg:#fef2f2;--err-bd:#fecaca;
+    --radius:18px;--radius-sm:11px;--radius-xs:8px;
+    --shadow:0 1px 2px rgba(0,0,0,.04),0 8px 24px -12px rgba(0,0,0,.12);
+    --shadow-lg:0 20px 60px -15px rgba(0,0,0,.28);
+  }
+  @media(prefers-color-scheme:dark){:root{
+    --bg:#0a0a0c;--card:#151518;--surface:#1e1e22;--surface2:#27272c;
+    --text:#f4f4f6;--text2:#a6a6b2;--text3:#6b6b76;
+    --border:#26262b;--border2:#34343b;
+    --ok:#4ade80;--ok-bg:#0a2a16;--err:#f87171;--err-bg:#2a0f0f;--err-bd:#5a1f1f;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px -12px rgba(0,0,0,.6);
+    --shadow-lg:0 20px 60px -15px rgba(0,0,0,.7);
+  }}
+  body{font-family:'Inter',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background:var(--bg);color:var(--text);min-height:100vh;display:flex;justify-content:center;
+    padding:28px 16px 60px;-webkit-font-smoothing:antialiased}
+  #root{width:100%;max-width:920px}
+  a{color:var(--brand);text-decoration:none}
+
+  /* header / hero */
+  .top{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px}
+  .logo{display:flex;align-items:center;gap:11px}
+  .logo-ic{width:42px;height:42px;border-radius:13px;background:var(--grad);display:flex;align-items:center;
+    justify-content:center;box-shadow:0 6px 18px -6px rgba(221,42,123,.6)}
+  .logo-ic i{color:#fff;font-size:22px}
+  .logo-tx h1{font-size:18px;font-weight:800;letter-spacing:-.02em;line-height:1}
+  .logo-tx span{font-size:11.5px;color:var(--text3);font-weight:500}
+  .top-pill{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--text2);
+    background:var(--card);border:1px solid var(--border);padding:6px 12px;border-radius:30px;box-shadow:var(--shadow)}
+  .top-pill .d{width:7px;height:7px;border-radius:50%;background:var(--ok)}
+  .top-pill .d.off{background:var(--text3)}
+
+  .hero{text-align:center;margin:10px 0 22px}
+  .hero h2{font-size:30px;font-weight:800;letter-spacing:-.03em;line-height:1.12;margin-bottom:8px}
+  .hero h2 .g{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero p{font-size:14.5px;color:var(--text2);max-width:520px;margin:0 auto;line-height:1.55}
+
+  /* search */
+  .searchwrap{max-width:560px;margin:22px auto 0}
+  .search{display:flex;align-items:center;gap:11px;padding:7px 7px 7px 16px;border:1.5px solid var(--border2);
+    border-radius:40px;background:var(--card);transition:.18s;box-shadow:var(--shadow)}
+  .search:focus-within{border-color:var(--brand);box-shadow:0 0 0 4px rgba(225,48,108,.12),var(--shadow)}
+  .search>i{font-size:19px;color:var(--text3)}
+  .search input{flex:1;border:none;background:transparent;font-size:15px;outline:none;color:var(--text);min-width:0}
+  .search-btn{border:none;background:var(--grad);color:#fff;font-size:14px;font-weight:700;cursor:pointer;
+    padding:11px 22px;border-radius:34px;display:flex;align-items:center;gap:7px;transition:.15s;white-space:nowrap}
+  .search-btn:hover{filter:brightness(1.06)}.search-btn:disabled{opacity:.45;cursor:not-allowed;filter:none}
+  .clr{border:none;background:none;cursor:pointer;padding:6px;color:var(--text3)}.clr i{font-size:17px}
+  .hint{text-align:center;font-size:12.5px;color:var(--text3);margin-top:11px}
+
+  .err{display:flex;gap:10px;padding:13px 15px;background:var(--err-bg);border:1px solid var(--err-bd);
+    border-radius:var(--radius-sm);margin:16px auto 0;max-width:560px}
+  .err i{font-size:18px;color:var(--err)}.err .t{font-size:13px;color:var(--err);line-height:1.5}
+
+  /* loading */
+  .loading{display:flex;flex-direction:column;align-items:center;padding:60px 20px;text-align:center}
+  .spinner{width:38px;height:38px;border-radius:50%;border:3px solid var(--surface2);border-top-color:var(--brand);animation:spin .8s linear infinite;margin-bottom:16px}
+  .lt{font-size:15px;font-weight:700}.ls{font-size:13px;color:var(--text2);margin-top:4px}
+
+  /* PROFILE LAYOUT (two columns on desktop) */
+  .profile{display:grid;grid-template-columns:300px 1fr;gap:22px;margin-top:24px;align-items:start}
+  @media(max-width:720px){.profile{grid-template-columns:1fr}}
+  .pcard{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+    box-shadow:var(--shadow);padding:22px;position:sticky;top:20px}
+  @media(max-width:720px){.pcard{position:static}}
+  .pavatar-wrap{display:flex;justify-content:center;margin-bottom:14px}
+  .pavatar{width:104px;height:104px;border-radius:50%;object-fit:cover;padding:3px;background:var(--grad)}
+  .pavatar.broken{background:var(--surface);display:flex;align-items:center;justify-content:center}
+  .pname{display:flex;align-items:center;justify-content:center;gap:6px;font-weight:800;font-size:18px;text-align:center}
+  .pverif{color:#3897f0;font-size:17px}
+  .pfull{text-align:center;font-size:13.5px;color:var(--text2);margin-top:2px}
+  .pstats{display:flex;justify-content:space-around;margin:16px 0;padding:14px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+  .pstat{text-align:center}.pstat b{display:block;font-size:17px;font-weight:800}.pstat span{font-size:11.5px;color:var(--text3)}
+  .pbio{font-size:13px;color:var(--text2);line-height:1.55;white-space:pre-wrap;text-align:center}
+  .pchip{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;color:var(--text2);background:var(--surface);
+    padding:5px 11px;border-radius:20px;margin:10px auto 0}
+
+  .content{min-width:0}
+  .tabs{display:flex;gap:4px;background:var(--surface);padding:5px;border-radius:14px;margin-bottom:16px}
+  .tab{flex:1;padding:10px;border:none;background:none;font-size:13px;font-weight:700;color:var(--text3);
+    cursor:pointer;border-radius:10px;display:flex;align-items:center;justify-content:center;gap:6px;transition:.15s}
+  .tab.active{background:var(--card);color:var(--text);box-shadow:var(--shadow)}
+  .tab .b{font-size:11px;opacity:.6}
+
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+  @media(max-width:480px){.grid{grid-template-columns:repeat(2,1fr);gap:8px}}
+  .cell{position:relative;aspect-ratio:1;border-radius:14px;overflow:hidden;background:var(--surface);
+    cursor:pointer;border:1px solid var(--border)}
+  .cell img{width:100%;height:100%;object-fit:cover;display:block;transition:filter .25s,transform .25s}
+  .cell:hover img{filter:blur(4px) brightness(.55);transform:scale(1.08)}
+  .cell .typ{position:absolute;top:8px;right:8px;color:#fff;font-size:15px;filter:drop-shadow(0 1px 3px rgba(0,0,0,.7));z-index:2}
+  .cell .center{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .22s;z-index:3}
+  .cell:hover .center{opacity:1}
+  .dlbtn{background:rgba(255,255,255,.96);color:#16161a;border:none;border-radius:30px;padding:9px 16px;
+    font-size:12.5px;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:6px;box-shadow:0 6px 18px rgba(0,0,0,.3);transform:translateY(6px);transition:transform .22s}
+  .cell:hover .dlbtn{transform:translateY(0)}
+  .stat-mini{position:absolute;bottom:8px;left:8px;color:#fff;font-size:11px;font-weight:700;z-index:2;
+    display:flex;gap:9px;opacity:0;transition:opacity .22s;filter:drop-shadow(0 1px 3px rgba(0,0,0,.8))}
+  .cell:hover .stat-mini{opacity:1}
+  .stat-mini span{display:flex;align-items:center;gap:3px}
+
+  .hgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  @media(max-width:480px){.hgrid{grid-template-columns:repeat(3,1fr)}}
+  .hl{display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer}
+  .hl-ring{width:72px;height:72px;border-radius:50%;padding:3px;background:var(--grad);transition:transform .15s}
+  .hl:hover .hl-ring{transform:scale(1.06)}
+  .hl-ring img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:3px solid var(--card)}
+  .hl-t{font-size:11.5px;color:var(--text2);max-width:72px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .empty{text-align:center;color:var(--text3);font-size:13.5px;padding:44px 20px}
+
+  /* FAQ */
+  .faq{max-width:620px;margin:46px auto 0}
+  .faq h3{text-align:center;font-size:20px;font-weight:800;letter-spacing:-.02em;margin-bottom:18px}
+  .qa{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:10px;overflow:hidden;box-shadow:var(--shadow)}
+  .q{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 17px;cursor:pointer;font-size:14px;font-weight:700}
+  .q i{color:var(--text3);transition:transform .2s;font-size:18px}
+  .qa.open .q i{transform:rotate(180deg)}
+  .a{max-height:0;overflow:hidden;transition:max-height .25s ease;font-size:13.5px;color:var(--text2);line-height:1.6}
+  .a div{padding:0 17px 16px}
+
+  /* modal */
+  .mbg{position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(3px);display:flex;
+    align-items:center;justify-content:center;padding:20px;z-index:80;animation:fade .15s}
+  .modal{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+    box-shadow:var(--shadow-lg);max-width:400px;width:100%;padding:22px;animation:pop .18s}
+  .modal h3{font-size:17px;font-weight:800;margin-bottom:3px}
+  .modal .sub{font-size:13px;color:var(--text2);margin-bottom:16px}
+  .mprev{width:100%;max-height:240px;object-fit:contain;border-radius:12px;margin-bottom:16px;background:var(--surface)}
+  .fmts{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+  .fmt{padding:15px 8px;border:1.5px solid var(--border);border-radius:13px;background:var(--card);cursor:pointer;text-align:center;transition:.15s}
+  .fmt:hover{transform:translateY(-2px);box-shadow:var(--shadow);border-color:var(--border2)}
+  .fmt .ic{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 8px}
+  .fmt .ic i{font-size:18px}.fmt .n{font-size:12.5px;font-weight:700}.fmt .s{font-size:10.5px;color:var(--text3);margin-top:1px}
+  .mclose{width:100%;padding:11px;border:1px solid var(--border);border-radius:11px;background:transparent;cursor:pointer;font-size:13.5px;font-weight:600;color:var(--text2)}
+  .mclose:hover{background:var(--surface)}
+
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);
+    padding:12px 20px;border-radius:30px;font-size:13.5px;font-weight:700;box-shadow:var(--shadow-lg);z-index:90;
+    display:flex;align-items:center;gap:9px;animation:pop .2s}
+  .toast.err{background:var(--err)}.toast.err{color:#fff}
+
+  .footer{text-align:center;font-size:11.5px;color:var(--text3);margin-top:40px;line-height:1.7}
+
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  @keyframes pop{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script>
+const API='http://127.0.0.1:8000';
+const FAQS=[
+  ['Is this free to use?','Yes — completely free. Type a username or paste a link and download. No sign-up, no payment, no daily limit.'],
+  ['Do I need to log in or enter a password?','No. You never log in. Just type the username of the profile you want, or paste a reel/post link, then download.'],
+  ['What can I download?','Reels, posts, photos, stories and highlights. For videos you can pick the full video with sound, just the audio as an MP3, or the video with no sound.'],
+  ['Can I download from a private account?','No — only public profiles. If an account is private, nobody can view or download its content without following it first.'],
+  ['Will the person know I viewed or downloaded their content?','No. It\u2019s completely anonymous — they get no notification and can\u2019t see that it was you.'],
+  ['A username didn\u2019t work but a link did. Why?','Instagram sometimes slows down repeated profile searches for a few minutes. Just wait a little and try again, or paste the direct reel/post link instead.'],
+  ['Where do my downloads go?','Straight to your device\u2019s Downloads folder, just like any other file you save from the web.'],
+];
+let S={screen:'home',input:'',busy:false,err:null,profile:null,tab:'posts',
+  modal:null,hl:null,hlLoading:false,ffmpeg:true,account:null,toast:null,openFaq:-1,
+  showConnect:false,sid:'',csrf:'',connecting:false,connectErr:null,checkpoint:false};
+
+function h(t,a,...k){const e=document.createElement(t);for(const x in(a||{})){const v=a[x];
+  if(x==='on')for(const ev in v)e.addEventListener(ev,v[ev]);
+  else if(x==='style'&&typeof v==='object')Object.assign(e.style,v);
+  else if(x==='html')e.innerHTML=v;else if(x==='class')e.className=v;else if(v!=null)e.setAttribute(x,v);}
+  for(const c of k){if(c==null)continue;e.append(c.nodeType?c:document.createTextNode(String(c)));}return e;}
+const I=c=>h('i',{class:'ti '+c});
+const num=n=>!n&&n!==0?'—':n>=1e6?(n/1e6).toFixed(1)+'M':n>=1e3?(n/1e3).toFixed(1)+'K':String(n);
+// Route Instagram CDN images through the backend proxy (they can't be hotlinked).
+const img=u=>!u?'':(/cdninstagram|fbcdn|instagram/.test(u)?API+'/api/img?u='+encodeURIComponent(u):u);
+
+async function jget(p){const r=await fetch(API+p);const t=await r.text();let d=null;try{d=JSON.parse(t)}catch{}if(!r.ok)throw new Error((d&&d.detail)||'Request failed');return d;}
+async function jpost(p,b){const r=await fetch(API+p,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(b)});const t=await r.text();let d=null;try{d=JSON.parse(t)}catch{}if(!r.ok)throw new Error((d&&d.detail)||'Request failed');return d;}
+
+async function boot(){try{const s=await jget('/api/auth/status');S.ffmpeg=!!s.ffmpeg;S.account=s.username;S.checkpoint=!!s.checkpoint_blocked;}catch{}render();}
+
+async function connectSession(){
+  if(!S.sid.trim()){S.connectErr='Paste your sessionid value first.';return render();}
+  S.connecting=true;S.connectErr=null;render();
+  try{
+    const d=await jpost('/api/auth/session',{sessionid:S.sid.trim(),csrftoken:S.csrf.trim()});
+    S.account=d.username;S.ffmpeg=!!d.ffmpeg;S.showConnect=false;S.sid='';S.csrf='';
+    S.toast={msg:'Connected ✓'};render();setTimeout(()=>{S.toast=null;render();},2200);
+  }catch(e){S.connectErr=e.message;}
+  S.connecting=false;render();
+}
+
+async function search(){
+  if(!S.input.trim())return;
+  const q=S.input.trim();S.busy=true;S.err=null;S.screen='loading';render();
+  const isLink=/instagram\.com\/(reel|reels|p|tv)\//i.test(q);
+  try{
+    if(isLink){
+      const info=await jpost('/api/info',{input:q});
+      S.screen='home';
+      S.modal={input:q,is_video:!!info.has_video,title:'@'+(info.uploader||''),thumb:info.thumbnail};
+    }else{
+      S.profile=await jpost('/api/profile',{input:q});S.tab='posts';S.screen='profile';
+    }
+  }catch(e){S.err=e.message;S.screen='home';}
+  S.busy=false;render();
+}
+
+function download({input,media_url,is_video,format}){
+  S.toast={msg:'Preparing…',spin:true};render();
+  (async()=>{try{
+    const body=media_url?{media_url,is_video,format}:{input,format};
+    const {job_id}=await jpost('/api/download',body);
+    while(true){await new Promise(r=>setTimeout(r,700));
+      const st=await jget('/api/status/'+job_id);
+      if(st.status==='done'){const a=document.createElement('a');a.href=API+'/api/download/'+job_id+'/file';a.click();
+        S.toast={msg:'Saved to Downloads'};render();setTimeout(()=>{S.toast=null;render();},2400);break;}
+      else if(st.status==='error')throw new Error(st.error||'Download failed');}
+  }catch(e){S.toast={msg:e.message,err:true};render();setTimeout(()=>{S.toast=null;render();},4200);}})();
+}
+
+async function openHL(id){S.hlLoading=true;S.hl=null;render();
+  try{const d=await jget('/api/highlight/'+encodeURIComponent(id));S.hl=d.items;}
+  catch(e){S.toast={msg:e.message,err:true};setTimeout(()=>{S.toast=null;render();},3500);}
+  S.hlLoading=false;render();}
+
+function dlCell(m,title){
+  return ()=>{S.modal={input:m.shortcode?('https://www.instagram.com/reel/'+m.shortcode+'/'):undefined,media_url:m.media_url,is_video:m.is_video,thumb:m.thumbnail,title};render();};
+}
+
+function render(){
+  const root=document.getElementById('root');root.innerHTML='';
+
+  // top bar
+  root.append(h('div',{class:'top'},
+    h('div',{class:'logo'},h('div',{class:'logo-ic'},I('ti-brand-instagram')),
+      h('div',{class:'logo-tx'},h('h1',{},'InstaFetch'),h('span',{},'viewer & downloader'))),
+    h('div',{class:'top-pill'},
+      h('div',{class:'d'+(S.account?'':' off')}),
+      S.account?'Online':'Setting up…')
+  ));
+
+  if(S.screen==='home'||S.screen==='loading'){
+    root.append(h('div',{class:'hero'},
+      h('h2',{},'View & download any ',h('span',{class:'g'},'Instagram'),' profile'),
+      h('p',{},'Type a username to browse their posts, reels, stories and highlights — then download anything. No login required.')));
+    if(S.checkpoint&&!S.account){
+      root.append(h('div',{class:'err',style:{maxWidth:'560px',cursor:'pointer'},on:{click:()=>{S.showConnect=true;render();}}},
+        I('ti-lock'),h('div',{class:'t'},
+          h('b',{},'Account locked by Instagram.'),' The service account hit a security check. Click here to fix it with a sessionid (takes 2 minutes).')));
+    }
+    const inp=h('input',{type:'text',placeholder:'@username  or  reel/post link',value:S.input,
+      on:{input:e=>{S.input=e.target.value;const b=document.getElementById('go');if(b)b.disabled=!S.input.trim();},
+          keydown:e=>{if(e.key==='Enter')search();}}});
+    const bar=h('div',{class:'search'},I('ti-search'),inp);
+    if(S.input)bar.append(h('button',{class:'clr',on:{click:()=>{S.input='';render();}}},I('ti-x')));
+    const go=h('button',{class:'search-btn',id:'go',on:{click:search}},I('ti-arrow-right'),'View');
+    if(!S.input.trim())go.disabled=true;bar.append(go);
+    root.append(h('div',{class:'searchwrap'},bar,h('div',{class:'hint'},'Public profiles only · Works with usernames and reel/post/story links')));
+    if(S.err)root.append(h('div',{class:'err'},I('ti-alert-circle'),h('div',{class:'t'},S.err)));
+  }
+
+  if(S.screen==='loading')root.append(h('div',{class:'loading'},h('div',{class:'spinner'}),
+    h('div',{class:'lt'},'Fetching…'),h('div',{class:'ls'},'Pulling profile, posts, stories & highlights')));
+
+  if(S.screen==='profile'&&S.profile){
+    const p=S.profile;
+    // search stays accessible at top
+    const inp=h('input',{type:'text',placeholder:'Search another username…',value:S.input,
+      on:{input:e=>{S.input=e.target.value;},keydown:e=>{if(e.key==='Enter')search();}}});
+    const bar=h('div',{class:'search',style:{maxWidth:'560px',margin:'0 auto 6px'}},I('ti-search'),inp,
+      h('button',{class:'search-btn',on:{click:search}},I('ti-arrow-right'),'View'));
+    root.append(bar);
+    if(S.err)root.append(h('div',{class:'err'},I('ti-alert-circle'),h('div',{class:'t'},S.err)));
+
+    const wrap=h('div',{class:'profile'});
+    // LEFT — profile card
+    const pc=h('div',{class:'pcard'});
+    const av=h('img',{class:'pavatar',src:img(p.profile_pic),referrerpolicy:'no-referrer',
+      on:{error:e=>{e.target.classList.add('broken');e.target.removeAttribute('src');}}});
+    pc.append(h('div',{class:'pavatar-wrap'},av));
+    const nm=h('div',{class:'pname'},'@'+(p.username||''));
+    if(p.is_verified)nm.append(h('i',{class:'ti ti-rosette-discount-check pverif'}));
+    pc.append(nm);
+    if(p.full_name)pc.append(h('div',{class:'pfull'},p.full_name));
+    pc.append(h('div',{class:'pstats'},
+      h('div',{class:'pstat'},h('b',{},num(p.posts_count)),h('span',{},'posts')),
+      h('div',{class:'pstat'},h('b',{},num(p.followers)),h('span',{},'followers')),
+      h('div',{class:'pstat'},h('b',{},num(p.following)),h('span',{},'following'))));
+    if(p.biography)pc.append(h('div',{class:'pbio'},p.biography));
+    if(p.is_private)pc.append(h('div',{style:{textAlign:'center'}},h('div',{class:'pchip'},I('ti-lock'),'Private account')));
+    wrap.append(pc);
+
+    // RIGHT — tabs + grid
+    const content=h('div',{class:'content'});
+    const reels=p.media.filter(m=>m.is_video), posts=p.media;
+    const counts={posts:posts.length,reels:reels.length,stories:(p.stories||[]).length,highlights:(p.highlights||[]).length};
+    const tabs=h('div',{class:'tabs'});
+    [['posts','ti-layout-grid','Posts'],['reels','ti-video','Reels'],['stories','ti-circle-dashed','Stories'],['highlights','ti-bookmark','Highlights']]
+      .forEach(([id,ic,label])=>tabs.append(h('button',{class:'tab'+(S.tab===id?' active':''),
+        on:{click:()=>{S.tab=id;render();}}},I(ic),label,h('span',{class:'b'},counts[id]))));
+    content.append(tabs);
+
+    const mkCell=(m,title,showStats)=>{
+      const cell=h('div',{class:'cell',on:{click:dlCell(m,title)}});
+      cell.append(h('img',{src:img(m.thumbnail),referrerpolicy:'no-referrer',loading:'lazy',decoding:'async',on:{error:e=>{e.target.remove();}}}));
+      cell.append(h('i',{class:'ti '+(m.type==='reel'?'ti-video':m.is_video?'ti-player-play':'ti-photo')+' typ'}));
+      if(showStats){const sm=h('div',{class:'stat-mini'});
+        if(m.view_count)sm.append(h('span',{},I('ti-eye'),num(m.view_count)));
+        if(m.like_count)sm.append(h('span',{},I('ti-heart'),num(m.like_count)));
+        if(sm.children.length)cell.append(sm);}
+      cell.append(h('div',{class:'center'},h('button',{class:'dlbtn'},I('ti-download'),'Download')));
+      return cell;
+    };
+
+    if(S.tab==='posts'||S.tab==='reels'){
+      const items=S.tab==='reels'?reels:posts;
+      if(!items.length)content.append(h('div',{class:'empty'},'Nothing here yet.'));
+      else{const g=h('div',{class:'grid'});items.forEach(m=>g.append(mkCell(m,'@'+p.username,true)));content.append(g);}
+    }
+    if(S.tab==='stories'){
+      const items=p.stories||[];
+      if(!items.length)content.append(h('div',{class:'empty'},'No active stories — they expire after 24 hours.'));
+      else{const g=h('div',{class:'grid'});items.forEach(s=>g.append(mkCell(s,'Story',false)));content.append(g);}
+    }
+    if(S.tab==='highlights'){
+      const items=p.highlights||[];
+      if(!items.length)content.append(h('div',{class:'empty'},'No highlights.'));
+      else{const g=h('div',{class:'hgrid'});items.forEach(hl=>{
+        const c=h('div',{class:'hl',on:{click:()=>openHL(hl.id)}});
+        const ring=h('div',{class:'hl-ring'});ring.append(h('img',{src:img(hl.cover),referrerpolicy:'no-referrer',loading:'lazy',decoding:'async',on:{error:e=>{e.target.remove();}}}));
+        c.append(ring,h('div',{class:'hl-t'},hl.title));g.append(c);});content.append(g);}
+    }
+    wrap.append(content);
+    root.append(wrap);
+  }
+
+  // FAQ on home
+  if(S.screen==='home'){
+    const faq=h('div',{class:'faq'});
+    faq.append(h('h3',{},'Frequently asked questions'));
+    FAQS.forEach(([q,a],i)=>{
+      const open=S.openFaq===i;
+      const qa=h('div',{class:'qa'+(open?' open':'')});
+      qa.append(h('div',{class:'q',on:{click:()=>{S.openFaq=open?-1:i;render();}}},h('span',{},q),I('ti-chevron-down')));
+      const ans=h('div',{class:'a'},h('div',{},a));
+      qa.append(ans);faq.append(qa);
+      if(open)setTimeout(()=>{ans.style.maxHeight=ans.scrollHeight+'px';},0);
+    });
+    root.append(faq);
+  }
+
+  root.append(h('div',{class:'footer'},'For personal use · Public content only · Respect creators\u2019 copyright & Instagram\u2019s Terms'));
+
+  // connect modal (operator setup — paste sessionid fallback)
+  if(S.showConnect){
+    const bg=h('div',{class:'mbg',on:{click:e=>{if(e.target===e.currentTarget){S.showConnect=false;S.connectErr=null;render();}}}});
+    const box=h('div',{class:'modal',style:{maxWidth:'440px'}});
+    box.append(h('h3',{},'Operator setup'),
+      h('div',{class:'sub'},'This is for whoever runs the app — not visitors. Visitors just search and download.'));
+    box.append(h('div',{style:{padding:'10px 12px',borderRadius:'10px',fontSize:'13px',fontWeight:'600',marginBottom:'14px',
+      background:S.account?'var(--ok-bg)':'var(--surface)',color:S.account?'var(--ok)':'var(--text2)'}},
+      S.account?('● Connected as @'+S.account):'● Not connected yet'));
+    const steps=h('div',{style:{fontSize:'12.5px',color:'var(--text2)',lineHeight:'1.7',background:'var(--surface)',padding:'12px 14px',borderRadius:'10px',marginBottom:'14px'}});
+    steps.append(h('b',{style:{color:'var(--text)'}},'Recommended — set it once in .env:'),h('br'),
+      'INSTA_USER=your_throwaway_account',h('br'),'INSTA_PASS=your_password',h('br'),
+      'Then restart the app. It logs in automatically and reconnects on its own if the session ever drops.');
+    box.append(steps);
+    box.append(h('div',{class:'sub',style:{marginBottom:'8px'}},'Fallback (if Instagram blocks the password login): paste a sessionid cookie instead.'));
+    if(S.connectErr)box.append(h('div',{class:'err',style:{margin:'0 0 12px'}},I('ti-alert-circle'),h('div',{class:'t'},S.connectErr)));
+    const sidIn=h('input',{type:'text',placeholder:'sessionid cookie value (optional fallback)',value:S.sid,
+      style:{width:'100%',padding:'12px 14px',border:'1.5px solid var(--border2)',borderRadius:'10px',background:'var(--bg)',color:'var(--text)',fontSize:'13px',marginBottom:'10px',outline:'none'},
+      on:{input:e=>{S.sid=e.target.value;},keydown:e=>{if(e.key==='Enter')connectSession();}}});
+    box.append(sidIn);
+    const btn=h('button',{class:'search-btn',style:{width:'100%',justifyContent:'center',marginBottom:'12px'},on:{click:connectSession}},
+      S.connecting?'Connecting…':'Connect with sessionid');
+    if(S.connecting)btn.disabled=true;
+    box.append(btn);
+    box.append(h('button',{class:'mclose',on:{click:()=>{S.showConnect=false;S.connectErr=null;render();}}},'Close'));
+    bg.append(box);root.append(bg);
+  }
+
+  // download modal
+  if(S.modal){
+    const m=S.modal;
+    const bg=h('div',{class:'mbg',on:{click:e=>{if(e.target===e.currentTarget){S.modal=null;render();}}}});
+    const box=h('div',{class:'modal'});
+    box.append(h('h3',{},'Download'),h('div',{class:'sub'},m.title||''));
+    if(m.thumb)box.append(h('img',{class:'mprev',src:img(m.thumb),referrerpolicy:'no-referrer',on:{error:e=>{e.target.remove();}}}));
+    const fmts=m.is_video
+      ?[['full','ti-download','Full reel','Video + audio','#E1306C'],['audio','ti-music','Audio','MP3','#8b5cf6'],['silent','ti-volume-off','No audio','Video only','#0ea5e9']]
+      :[['full','ti-photo','Photo','Save image','#E1306C']];
+    const fg=h('div',{class:'fmts',style:m.is_video?{}:{gridTemplateColumns:'1fr'}});
+    fmts.forEach(([f,ic,n,s,col])=>{
+      const dis=(f==='audio'||f==='silent')&&!S.ffmpeg;
+      const el=h('div',{class:'fmt',style:dis?{opacity:.4,cursor:'not-allowed'}:{},
+        on:{click:()=>{if(dis)return;download({input:m.input,media_url:m.media_url,is_video:m.is_video,format:f});}}});
+      const ic2=h('div',{class:'ic',style:{background:col+'1e'}});const i=I(ic);i.style.color=col;ic2.append(i);
+      el.append(ic2,h('div',{class:'n'},n),h('div',{class:'s'},s));fg.append(el);
+    });
+    box.append(fg);
+    if(m.is_video&&!S.ffmpeg)box.append(h('div',{class:'hint',style:{marginBottom:'12px'}},'Audio / No-audio need ffmpeg: pip install imageio-ffmpeg'));
+    else if(m.is_video)box.append(h('div',{class:'hint',style:{marginBottom:'12px'}},'Tip: grab another format without re-fetching — just tap it.'));
+    box.append(h('button',{class:'mclose',on:{click:()=>{S.modal=null;render();}}},'Done'));
+    bg.append(box);root.append(bg);
+  }
+
+  // highlight items viewer
+  if(S.hlLoading||S.hl){
+    const bg=h('div',{class:'mbg',on:{click:e=>{if(e.target===e.currentTarget){S.hl=null;S.hlLoading=false;render();}}}});
+    const box=h('div',{class:'modal'});
+    box.append(h('h3',{},'Highlight'),h('div',{class:'sub'},'Tap an item to download'));
+    if(S.hlLoading)box.append(h('div',{class:'loading',style:{padding:'30px'}},h('div',{class:'spinner'})));
+    else{const g=h('div',{class:'grid'});(S.hl||[]).forEach(it=>{
+      const c=h('div',{class:'cell',on:{click:()=>{S.modal={media_url:it.media_url,is_video:it.is_video,thumb:it.thumbnail,title:'Highlight item'};S.hl=null;render();}}});
+      c.append(h('img',{src:img(it.thumbnail),referrerpolicy:'no-referrer',loading:'lazy',decoding:'async',on:{error:e=>{e.target.remove();}}}));
+      c.append(h('i',{class:'ti '+(it.is_video?'ti-player-play':'ti-photo')+' typ'}));
+      c.append(h('div',{class:'center'},h('button',{class:'dlbtn'},I('ti-download'),'Get')));
+      g.append(c);});box.append(g);}
+    box.append(h('button',{class:'mclose',style:{marginTop:'12px'},on:{click:()=>{S.hl=null;render();}}},'Close'));
+    bg.append(box);root.append(bg);
+  }
+
+  if(S.toast){const t=h('div',{class:'toast'+(S.toast.err?' err':'')});
+    if(S.toast.spin)t.append(h('div',{style:{width:'14px',height:'14px',border:'2px solid rgba(255,255,255,.35)',borderTopColor:'#fff',borderRadius:'50%',animation:'spin .7s linear infinite'}}));
+    else t.append(I(S.toast.err?'ti-alert-circle':'ti-circle-check'));
+    t.append(S.toast.msg);root.append(t);}
+}
+boot();
+</script>
+</body>
+</html>

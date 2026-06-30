@@ -1,0 +1,8 @@
+# Optional proxy pool — one proxy per line. Empty = no proxy (default).
+# This is how IgAnony-style services avoid Instagram rate limits at scale:
+# requests are spread across many IPs so no single one trips a 429.
+#
+# Format examples (uncomment / add your own residential proxies):
+# http://user:pass@host:port
+# http://123.45.67.89:8080
+# socks5://user:pass@host:port
